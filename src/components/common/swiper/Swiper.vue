@@ -3,8 +3,6 @@
       <div class="swiper" @touchstart="touchStart" @touchmove="touchMove" @touchend="touchEnd">
         <slot></slot>
       </div>
-      <slot name="indicator">
-      </slot>
       <div class="indicator">
         <slot name="indicator" v-if="showIndicator && slideCount>1">
           <div v-for="(item, index) in slideCount" class="indi-item" :class="{active: index === currentIndex-1}" :key="index"></div>
@@ -46,7 +44,7 @@
     mounted: function () {
       // 1.操作DOM, 在前后添加Slide
       setTimeout(() => {
-        this.handleDom();
+        this.handleDom();  // 监听就是等图片加载完了之后给前后添加一个图片
 
         // 2.开启定时器
         this.startTimer();
@@ -89,7 +87,7 @@
        */
       checkPosition: function () {
         window.setTimeout(() => {
-          // 1.校验正确的位置
+          // 1.校验正确的位置 其实这里面做的操作 就是让变换自然一点
           this.swiperStyle.transition = '0ms';
           if (this.currentIndex >= this.slideCount + 1) {
             this.currentIndex = 1;
