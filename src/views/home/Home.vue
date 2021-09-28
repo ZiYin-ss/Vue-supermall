@@ -4,7 +4,7 @@
     <home-swiper :banner="banner"></home-swiper>
     <recommend-view :recommends="recommends"></recommend-view>
     <feature-view></feature-view>
-    <tab-control :titles="['流行','新款','精选']"></tab-control>
+    <tab-control :titles="['流行','新款','精选']" class="tab-control"></tab-control>
     <ul>
       <li>列表1</li>
       <li>列表2</li>
@@ -159,5 +159,9 @@
     right: 0;
     top: 0;
     z-index: 9;
+  }
+  .tab-control{
+    position: sticky;
+    top: 43px;
   }
 </style>
