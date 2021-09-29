@@ -57,13 +57,25 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
-
+    },
+    mounted() {
       //  创建时就开始监听了
       this.$bus.$on('aaa',()=>{
         this.$refs.scroll.scroll.refresh()
       })
     },
     methods:{
+      // 防抖
+      debounce(func,delay){
+        let timer = null
+        return function (...args){
+          if(timer)  clearInterval(timer)
+          timer = setTimeout(() =>{
+            func.apply(this,args)
+          },delay)
+        }
+
+      },
       // 网络请求相关
       getHomeMultidata() {
         getHomeMultidata().then(res =>{
@@ -75,7 +87,7 @@
         this.goods[type].page += 1
         getHomeGoods(type,this.goods[type].page).then(res => {
           this.goods[type].list.push(...res.data.list)
-
+          //   this.scroll && this.$refs.scroll.scroll.finishPullUp() 先判断是否存在
           this.$refs.scroll.scroll.finishPullUp()
         })
       },
