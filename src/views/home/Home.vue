@@ -1,14 +1,14 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <scroll class="content" ref="scroll">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banner="banner"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
       <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
-    <back-top @click.native="backClick"></back-top>
+    <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
   </div>
 </template>
 
@@ -46,7 +46,8 @@
           'new':{page:0,list:[]},
           'sell':{page:0,list:[]},
         },
-        currentType:'pop'
+        currentType:'pop',
+        isShowBackTop:false,
       }
     },
     created() {
@@ -55,7 +56,6 @@
       // 请求商品数据
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
-      this.getHomeGoods('sell')
       this.getHomeGoods('sell')
     },
     methods:{
@@ -69,19 +69,9 @@
       getHomeGoods(type) {
         this.goods[type].page += 1
         getHomeGoods(type,this.goods[type].page).then(res => {
-            /*
-              let totalNums = []
-              const nums1 = [20,11,222] 将nums1数组的元素放到另外totalNums数组中
-                1
-                  for (let n of nums1){
-                    totalNums.push(n)
-                  }
-                2
-                  totalNums.push(...nums1)
-                  这个也是 会自动把nums1里面的数据一个一个拿出来放到totalNums中
-
-            */
           this.goods[type].list.push(...res.data.list)
+
+          this.$refs.scroll.scroll.finishPullUp()
         })
       },
       // 事件监听相关
@@ -101,6 +91,13 @@
       backClick(){
         this.$refs.scroll.scroll.scrollTo(0,0,500)
         // refs 拿到特定的组件或元素里面的属性和方法  回到顶部的方法 第一个是x 第二个是y 第三个是多久回到
+      },
+      contentScroll(positon){
+       this.isShowBackTop = (-positon.y) > 1000
+      },
+      loadMore(){
+        this.getHomeGoods(this.currentType)
+        this.$refs.scroll.scroll.refresh()
       }
 
     },
@@ -141,3 +138,5 @@
     right: 0;
   }
 </style>
+
+
