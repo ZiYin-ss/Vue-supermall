@@ -1,6 +1,7 @@
 <template>
   <div class="wrapper">
     <ul class="content">
+      <button @click="btnClick">按钮</button>
       <li>分类列表1</li>
       <li>分类列表2</li>
       <li>分类列表3</li>
@@ -116,8 +117,23 @@ export default {
   },
   mounted() {
     this.scroll = new BScroll(document.querySelector('.wrapper'),{
-
+        probeType:3,
+      pullUpLoad:true
     })
+
+    this.scroll.on('scroll',(position) =>{
+      console.log(position)
+    })
+
+    this.scroll.on('pullingUp',() =>{
+      console.log('aaa')
+    })
+
+  },
+  methods:{
+    btnClick(){
+      console.log('点我')
+    }
   }
 }
 </script>
