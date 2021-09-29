@@ -57,6 +57,11 @@
       this.getHomeGoods('pop')
       this.getHomeGoods('new')
       this.getHomeGoods('sell')
+
+      //  创建时就开始监听了
+      this.$bus.$on('aaa',()=>{
+        this.$refs.scroll.scroll.refresh()
+      })
     },
     methods:{
       // 网络请求相关
@@ -97,7 +102,7 @@
       },
       loadMore(){
         this.getHomeGoods(this.currentType)
-        this.$refs.scroll.scroll.refresh()
+        // this.$refs.scroll.scroll.refresh()
       }
 
     },
