@@ -1,15 +1,14 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <div class="wrapper">
-      <div class="content">
-        <home-swiper :banner="banner"></home-swiper>
-        <recommend-view :recommends="recommends"></recommend-view>
-        <feature-view></feature-view>
-        <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
-        <goods-list :goods="showGoods"></goods-list>
-      </div>
-    </div>
+    <scroll class="content" ref="scroll">
+      <home-swiper :banner="banner"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <goods-list :goods="showGoods"></goods-list>
+    </scroll>
+    <back-top @click.native="backClick"></back-top>
   </div>
 </template>
 
@@ -21,6 +20,8 @@
   import NavBar from 'components/common/navbar/NavBar'
   import TabControl from 'components/content/tabControl/TabControl'
   import GoodsList from 'components/content/goods/GoodsList'
+  import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from '@/components/content/backTop/BackTop'
 
   import {getHomeMultidata,getHomeGoods} from 'network/home'
 
@@ -32,7 +33,9 @@
       RecommendView,
       FeatureView,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll,
+      BackTop
     },
     data () {
       return {
@@ -94,6 +97,10 @@
             this.currentType = 'sell'
             break
         }
+      },
+      backClick(){
+        this.$refs.scroll.scroll.scrollTo(0,0,500)
+        // refs 拿到特定的组件或元素里面的属性和方法  回到顶部的方法 第一个是x 第二个是y 第三个是多久回到
       }
 
     },
@@ -102,14 +109,14 @@
         return this.goods[this.currentType].list
       }
     }
-
-
   }
 </script>
 
 <style scoped>
   #home{
+    height: 100vh;
     padding-top: 44px;
+    position: relative;
   }
   .home-nav{
     background-color:var(--color-tint);
@@ -124,5 +131,13 @@
     position: sticky;
     top: 43px;
     z-index: 9;
+  }
+  .content{
+    overflow: hidden;
+    position: absolute;
+    top: 43px;
+    bottom: 49px;
+    left: 0;
+    right: 0;
   }
 </style>
