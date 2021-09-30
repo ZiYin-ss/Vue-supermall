@@ -50,7 +50,8 @@
         currentType:'pop',
         isShowBackTop:false,
         tabOffsetTop:0,
-        isTabFixed:false
+        isTabFixed:false,
+        saveY:0
       }
     },
     created() {
@@ -73,6 +74,13 @@
       // 所有组件都有一个$el属性 用户获取组件中的元素
       // 但是必须要等图片加载完之后 拿到最终的offsetTop  要不然拿到的就是没有图片的offsetTop
 
+    },
+    activated() {
+      this.$refs.scroll.scroll.scrollTo(0,this.saveY,0)
+      this.$refs.scroll.scroll.refresh()
+    },
+    deactivated() {
+      this.saveY=this.$refs.scroll.scroll.y
     },
     methods:{
       // 防抖
