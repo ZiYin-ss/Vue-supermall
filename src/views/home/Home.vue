@@ -60,21 +60,22 @@
     },
     mounted() {
       //  创建时就开始监听了
+      const refresh = this.debounce(this.$refs.scroll.scroll.refresh,200)
       this.$bus.$on('aaa',()=>{
+        // refresh()
         this.$refs.scroll.scroll.refresh()
       })
     },
     methods:{
       // 防抖
       debounce(func,delay){
-        let timer = null
+        let timer = null  // 为什么这个地方还会存在呢? 因为 你看 下面引用了  所以会存在
         return function (...args){
-          if(timer)  clearInterval(timer)
-          timer = setTimeout(() =>{
+          if(timer)  clearTimeout(timer)
+          timer = setTimeout(() => {
             func.apply(this,args)
           },delay)
         }
-
       },
       // 网络请求相关
       getHomeMultidata() {
@@ -116,7 +117,6 @@
         this.getHomeGoods(this.currentType)
         // this.$refs.scroll.scroll.refresh()
       }
-
     },
     computed:{
       showGoods(){
