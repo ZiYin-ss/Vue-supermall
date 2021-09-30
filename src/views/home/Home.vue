@@ -1,11 +1,12 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
+    <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl1" class="tab-control" v-show="isTabFixed"></tab-control>
     <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
-      <home-swiper :banner="banner"></home-swiper>
+      <home-swiper :banner="banner" @swiperImageLoad="swiperImageLoad"></home-swiper>
       <recommend-view :recommends="recommends"></recommend-view>
       <feature-view></feature-view>
-      <tab-control :titles="['流行','新款','精选']" class="tab-control" @tabClick="tabClick"></tab-control>
+      <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tabControl"></tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -48,6 +49,8 @@
         },
         currentType:'pop',
         isShowBackTop:false,
+        tabOffsetTop:0,
+        isTabFixed:false
       }
     },
     created() {
@@ -65,6 +68,11 @@
         // refresh()
         this.$refs.scroll.scroll.refresh()
       })
+
+      // 获取tabControl的offsetTop
+      // 所有组件都有一个$el属性 用户获取组件中的元素
+      // 但是必须要等图片加载完之后 拿到最终的offsetTop  要不然拿到的就是没有图片的offsetTop
+
     },
     methods:{
       // 防抖
@@ -105,17 +113,26 @@
             this.currentType = 'sell'
             break
         }
+        this.$refs.tabControl1.currentIndex = index
       },
       backClick(){
         this.$refs.scroll.scroll.scrollTo(0,0,500)
         // refs 拿到特定的组件或元素里面的属性和方法  回到顶部的方法 第一个是x 第二个是y 第三个是多久回到
       },
       contentScroll(positon){
-       this.isShowBackTop = (-positon.y) > 1000
+        //  判断backTop是否显示
+        this.isShowBackTop = (-positon.y) > 1000
+
+      //  决定tabControl是否吸顶
+        this.isTabFixed = (-positon.y)>this.tabOffsetTop
+
       },
       loadMore(){
         this.getHomeGoods(this.currentType)
         // this.$refs.scroll.scroll.refresh()
+      },
+      swiperImageLoad(){
+        this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
       }
     },
     computed:{
@@ -129,22 +146,11 @@
 <style scoped>
   #home{
     height: 100vh;
-    padding-top: 44px;
     position: relative;
   }
   .home-nav{
     background-color:var(--color-tint);
     color: #fff;
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    z-index: 9;
-  }
-  .tab-control{
-    position: sticky;
-    top: 43px;
-    z-index: 9;
   }
   .content{
     overflow: hidden;
@@ -153,6 +159,11 @@
     bottom: 49px;
     left: 0;
     right: 0;
+  }
+  .tab-control{
+    position: relative;
+    top: -1px;
+    z-index: 9;
   }
 </style>
 
