@@ -27,7 +27,6 @@
 
 <style scoped>
   .detail-swiper{
-    height: 300px;
-    overflow: hidden;
+    height: 200px;
   }
 </style>

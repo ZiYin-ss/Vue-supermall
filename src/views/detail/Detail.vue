@@ -30,6 +30,7 @@
         // 获取顶部的图片轮播数据
         this.topImages = res.result.itemInfo.topImages
         // 获取商品详细信息的展示 就是第二个部分
+
       })
     }
   }
